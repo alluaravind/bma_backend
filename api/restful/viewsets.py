@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -7,8 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.models import UserData
 from api.restful.serializers import UserLoginSerializer, UserSerializer
-from django.contrib.auth import authenticate, login
-
+from bma_backend.permissions import IsAdminOrReadOnly
 
 class CustomPagination(LimitOffsetPagination):
     """
@@ -23,13 +23,8 @@ class CustomPagination(LimitOffsetPagination):
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = UserData.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminOrReadOnly]
     pagination_class = CustomPagination  # Enable pagination
-
-
-# class UserRegistrationViewSet(viewsets.ModelViewSet):
-#     queryset = UserData.objects.all()
-#     serializer_class = UserSerializer
 
 
 class UserLoginViewSet(viewsets.ViewSet):
